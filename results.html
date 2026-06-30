@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results</title>
+    <style>
+        body { font-family: Arial; max-width: 900px; margin: 30px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #0366d6; color: white; }
+    </style>
+</head>
+<body>
+    <h1>{{ username }} - {{ repos|length }} Repos</h1>
+    <table>
+        <tr><th>Repo</th><th>Stars</th><th>Activity</th><th>Community</th><th>Maintenance</th></tr>
+        {% for repo in repos %}
+        <tr>
+            <td>{{ repo.name }}</td>
+            <td>{{ repo.stars }}</td>
+            <td>{{ repo.activity }}/10</td>
+            <td>{{ repo.community }}/10</td>
+            <td>{{ repo.maintenance }}/10</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br><a href="/">Back</a>
+</body>
+</html>
