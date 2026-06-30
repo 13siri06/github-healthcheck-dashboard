@@ -15,6 +15,7 @@ def index():
 
 # Route 2: Process form (gets username, fetches repos)
 @app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST'])
 def search():
     username = request.form.get('username')
     
@@ -25,14 +26,13 @@ def search():
     repos_data = fetch_github_repos(username)
     
     if repos_data is None:
-        return "User not found", 404
+        return f"User '{username}' not found on GitHub", 404
     
     # Calculate scores for each repo
     repos_with_scores = calculate_scores(repos_data)
     
-    # For now, just return the data as text
-    return str(repos_with_scores)
-
+    # Pass data to HTML template
+    return render_template('results.html', username=username, repos=repos_with_scores)
 def fetch_github_repos(username):
     """
     Fetch all public repos for a GitHub user
