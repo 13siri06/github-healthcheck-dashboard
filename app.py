@@ -33,6 +33,7 @@ def search():
     
     # Pass data to HTML template
     return render_template('results.html', username=username, repos=repos_with_scores)
+    
 def fetch_github_repos(username):
     """
     Fetch all public repos for a GitHub user
