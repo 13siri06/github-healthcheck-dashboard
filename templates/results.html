@@ -1,62 +1,77 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Results - GitHub Health Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #0366d6;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f6f8fa;
-        }
-        a {
-            color: #0366d6;
-        }
-    </style>
-</head>
-<body>
-    <h1>Results for: {{ username }}</h1>
-    <p>Total Repos: {{ repos|length }}</p>
+from flask import Flask, render_template, request
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/search', methods=['POST'])
+def search():
+    username = request.form.get('username')
     
-    <table>
-        <tr>
-            <th>Repo Name</th>
-            <th>Stars</th>
-            <th>Forks</th>
-            <th>Activity</th>
-            <th>Community</th>
-            <th>Maintenance</th>
-        </tr>
-        {% for repo in repos %}
-        <tr>
-            <td>{{ repo.name }}</td>
-            <td>{{ repo.stars }}</td>
-            <td>{{ repo.forks }}</td>
-            <td>{{ repo.activity }}/10</td>
-            <td>{{ repo.community }}/10</td>
-            <td>{{ repo.maintenance }}/10</td>
-        </tr>
-        {% endfor %}
-    </table>
+    if not username:
+        return "Please enter a username", 400
     
-    <br>
-    <a href="/">← Search Another User</a>
-</body>
-</html>
+    repos = fetch_repos(username)
+    
+    if repos is None:
+        return render_template('error.html', message=f"User '{username}' not found on GitHub"), 404
+    
+    scored_repos = score_repos(repos)
+    return render_template('results.html', username=username, repos=scored_repos)
+
+def fetch_repos(username):
+    token = os.environ.get('GITHUB_TOKEN')
+    url = f"https://api.github.com/users/{username}/repos"
+    headers = {}
+    if token:
+        headers['Authorization'] = f'token {token}'
+    
+    try:
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 404:
+            return None
+        
+        if response.status_code != 200:
+            return None
+        
+        repos = response.json()
+        return repos
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+def score_repos(repos):
+    results = []
+    for repo in repos:
+        repo_name = repo.get('name')
+        stars = repo.get('stargazers_count', 0)
+        forks = repo.get('forks_count', 0)
+        open_issues = repo.get('open_issues_count', 0)
+        last_push = repo.get('pushed_at')
+        
+        activity_score = min(10, stars // 10)
+        community_score = min(10, (stars + forks) // 20)
+        maintenance_score = 8 if last_push else 2
+        
+        results.append({
+            'name': repo_name,
+            'activity': activity_score,
+            'community': community_score,
+            'maintenance': maintenance_score,
+            'stars': stars,
+            'forks': forks,
+            'open_issues': open_issues
+        })
+    
+    return results
+
+if __name__ == '__main__':
+    app.run(debug=True)
