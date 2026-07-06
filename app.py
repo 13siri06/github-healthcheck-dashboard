@@ -51,27 +51,21 @@ def fetch_repos(username):
 def score_repos(repos):
     results = []
     for repo in repos:
-        repo_name = repo.get('name')
         stars = repo.get('stargazers_count', 0)
         forks = repo.get('forks_count', 0)
-        open_issues = repo.get('open_issues_count', 0)
+        watchers = repo.get('watchers_count', 0)
         last_push = repo.get('pushed_at')
-        
-        activity_score = min(10, stars // 10)
-        community_score = min(10, (stars + forks) // 20)
+
+        # Activity: based on recency of last push, not stars
+        activity_score = 8 if last_push else 2  # improve with real date-diff logic
+
+        # Community: give partial credit even for small numbers
+        community_score = min(10, round((stars + forks) * 1.5))
+
+        # Maintenance: was already fine (last_push truthy)
         maintenance_score = 8 if last_push else 2
-        
-        results.append({
-            'name': repo_name,
-            'activity': activity_score,
-            'community': community_score,
-            'maintenance': maintenance_score,
-            'stars': stars,
-            'forks': forks,
-            'open_issues': open_issues,
-            'ai_summary': get_fake_ai_summary(repo)  # ADD THIS LINE
-        })
-    
+
+        results.append({...})
     return results
     
 def get_fake_ai_summary(repo):
