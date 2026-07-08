@@ -214,6 +214,87 @@
             color: #0256b8;
             text-decoration: underline;
         }
+
+        .score-clickable {
+            cursor: pointer;
+            border-bottom: 1px dotted #0366d6;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .score-clickable:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode .modal-box {
+            background: #161b22;
+            color: #c9d1d9;
+        }
+
+        .modal-box h3 {
+            color: #0366d6;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        body.dark-mode .modal-box h3 {
+            color: #58a6ff;
+        }
+
+        .modal-box .modal-score {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .modal-box .modal-formula {
+            background: #f6f8fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        body.dark-mode .modal-box .modal-formula {
+            background: #0d1117;
+        }
+
+        .modal-close {
+            background: #0366d6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            float: right;
+        }
         
         @media (max-width: 1024px) {
             .score-card { grid-template-columns: 1fr; }
@@ -281,6 +362,7 @@
                     <th>Issues</th>
                     <th>Activity</th>
                     <th>Community</th>
+                    <th>Maintenance</th>
                     <th>AI Health Summary</th>
                 </tr>
                 {% for repo in repos %}
@@ -289,8 +371,41 @@
                     <td>{{ repo.stars }}</td>
                     <td>{{ repo.forks }}</td>
                     <td>{{ repo.open_issues }}</td>
-                    <td>{{ repo.activity }}/10</td>
-                    <td>{{ repo.community }}/10</td>
+                    <td>
+                        <span class="score-clickable"
+                              data-type="activity"
+                              data-repo="{{ repo.name }}"
+                              data-score="{{ repo.activity }}"
+                              data-recent-commits="{{ repo.recent_commits }}"
+                              data-last-push="{{ repo.last_push }}"
+                              onclick="showExplanation(this)">
+                            {{ repo.activity }}/10 ℹ️
+                        </span>
+                    </td>
+                    <td>
+                        <span class="score-clickable"
+                              data-type="community"
+                              data-repo="{{ repo.name }}"
+                              data-score="{{ repo.community }}"
+                              data-stars="{{ repo.stars }}"
+                              data-forks="{{ repo.forks }}"
+                              data-contributors="{{ repo.contributors_count }}"
+                              onclick="showExplanation(this)">
+                            {{ repo.community }}/10 ℹ️
+                        </span>
+                    </td>
+                    <td>
+                        <span class="score-clickable"
+                              data-type="maintenance"
+                              data-repo="{{ repo.name }}"
+                              data-score="{{ repo.maintenance }}"
+                              data-issue-ratio="{{ repo.closed_issue_ratio }}"
+                              data-license="{{ repo.has_license }}"
+                              data-last-push="{{ repo.last_push }}"
+                              onclick="showExplanation(this)">
+                            {{ repo.maintenance }}/10 ℹ️
+                        </span>
+                    </td>
                     <td style="font-size: 12px; max-width: 200px;">{{ repo.ai_summary }}</td>
                 </tr>
                 {% endfor %}
@@ -302,6 +417,16 @@
             <div style="margin-top: 15px; font-size: 12px;">
                 GitHub Health Dashboard • Powered by Flask & Chart.js
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="scoreModal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-box">
+            <h3 id="modalTitle"></h3>
+            <div class="modal-score" id="modalScore"></div>
+            <p id="modalExplanation"></p>
+            <div class="modal-formula" id="modalFormula"></div>
+            <button class="modal-close" onclick="closeModal()">Close</button>
         </div>
     </div>
     
@@ -372,6 +497,42 @@
             },
             options: { ...chartConfig, scales: { y: { beginAtZero: true, max: 10 } } }
         });
+
+        // Score explanation modal
+        function showExplanation(el) {
+            const type = el.dataset.type;
+            const repoName = el.dataset.repo;
+            const score = el.dataset.score;
+
+            const title = document.getElementById('modalTitle');
+            const scoreEl = document.getElementById('modalScore');
+            const explanation = document.getElementById('modalExplanation');
+            const formula = document.getElementById('modalFormula');
+
+            if (type === 'activity') {
+                title.textContent = `Activity Score — ${repoName}`;
+                scoreEl.textContent = `${score}/10`;
+                explanation.textContent = "Based primarily on commits in the last 4 weeks. If commit history isn't available yet from GitHub, it falls back to how recently the repo was pushed to.";
+                formula.innerHTML = `Recent commits (last 4 weeks): ${el.dataset.recentCommits}<br>Last push: ${el.dataset.lastPush || 'unknown'}`;
+            } else if (type === 'community') {
+                title.textContent = `Community Score — ${repoName}`;
+                scoreEl.textContent = `${score}/10`;
+                explanation.textContent = "Combines stars, forks (weighted higher, since forking implies deeper engagement), watchers, and number of distinct contributors.";
+                formula.innerHTML = `Stars: ${el.dataset.stars} · Forks: ${el.dataset.forks} · Contributors: ${el.dataset.contributors}`;
+            } else if (type === 'maintenance') {
+                const license = el.dataset.license === 'True' ? 'Yes' : 'No';
+                title.textContent = `Maintenance Score — ${repoName}`;
+                scoreEl.textContent = `${score}/10`;
+                explanation.textContent = "Combines recency of activity, the percentage of issues that get closed, and whether the repo has a license file. Archived repos always score 0.";
+                formula.innerHTML = `Closed issues: ${el.dataset.issueRatio}%<br>Has license: ${license}<br>Last push: ${el.dataset.lastPush || 'unknown'}`;
+            }
+
+            document.getElementById('scoreModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('scoreModal').classList.remove('active');
+        }
     </script>
 </body>
 </html>
