@@ -1,93 +1,173 @@
-# GitHub Health Dashboard
+# 🚀 GitHub HealthCheck Dashboard
 
-An AI-powered tool that analyzes GitHub user portfolios and provides insights on repository health, activity, and community engagement.
+An intelligent web application that analyzes GitHub user profiles and provides insights into repository health, activity, and community engagement.
+
+---
 
 ## ✨ Features
 
-- 🔍 **GitHub User Analysis**: Fetch and analyze all public repositories for any GitHub user
-- 🌙 **Dashboard**: Modern, responsive UI with dark mode support
-- 📈 **Visual Analytics**: Interactive charts showing activity, community, and issue trends
-- 🤖 **AI Health Summaries**: AI-powered insights about repository health
-- 📱 **Responsive Design**: Works on desktop and mobile devices
+* 🔍 Analyze all public repositories of any GitHub user
+* 📊 Interactive dashboard with Chart.js visualizations
+* 🤖 Repository health summaries
+* 🌙 Dark/Light mode support
+* 📱 Responsive design for desktop and mobile
+* 🚀 Cloud deployment with Docker and CI/CD
 
-## 🚀 Live Demo
-
-Visit the live application:
-- **Render (Recommended):** https://github-healthcheck-dashboard.onrender.com
-- **AWS EC2:** http://13.233.84.245 (initial deployment)
+---
 
 ## 🛠️ Tech Stack
 
-**Backend:**
-- Python 3.9 + Flask
-- GitHub API Integration
-- Anthropic API (AI summaries)
+### Backend
 
-**Frontend:**
-- HTML/CSS/JavaScript
-- Chart.js (Data visualization)
-- Dark mode toggle
+* Python 3.9
+* Flask
+* GitHub REST API
 
-**DevOps & Deployment:**
-- Docker (Containerization)
-- AWS EC2 (Cloud hosting)
-- Render (Modern cloud platform)
-- Jenkins (CI/CD pipeline)
+### Frontend
 
-📋 Project Phases
-Phase 1:Flask Backend + GitHub API ✅
+* HTML
+* CSS
+* JavaScript
+* Chart.js
 
-Flask web application
-GitHub API integration
-Repository health scoring
-Error handling
-Phase 2:Dashboard UI ✅
+### DevOps & Cloud
 
-Responsive interface
-Chart.js visualizations
-Dark/Light mode
-Repository health summaries
-Clean card-based layout
-Phase 3: Deployment & DevOps ✅
+* Docker
+* AWS EC2
+* Render
+* Jenkins (CI/CD)
 
-Docker containerization
-AWS EC2 deployment
-Render deployment
-Jenkins CI/CD pipeline
+---
 
+## 📋 Project Phases
 
-Installation
+### ✅ Phase 1 – Backend Development
+
+* Flask web application
+* GitHub API integration
+* Repository health scoring
+* Error handling
+
+### ✅ Phase 2 – Dashboard UI
+
+* Responsive interface
+* Interactive charts
+* Dark/Light mode
+* Repository health summaries
+* Card-based layout
+
+### ✅ Phase 3 – DevOps & Deployment
+
+* Docker containerization
+* AWS EC2 deployment
+* Render deployment
+* Jenkins CI/CD pipeline
+
+---
+
+## 🚀 Installation
+
+### Clone the Repository
+
+```bash
 git clone https://github.com/YOUR_USERNAME/github-healthcheck-dashboard.git
 cd github-healthcheck-dashboard
+```
 
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
+
+### Run the Application
+
+```bash
 python app.py
+```
 
-Open http://localhost:5000 in your browser.
+Open your browser and visit:
 
-Run with Docker
+```text
+http://localhost:5000
+```
+
+---
+
+## 🐳 Run with Docker
+
+Build the Docker image:
+
+```bash
 docker build -t github-health-dashboard .
+```
+
+Run the container:
+
+```bash
 docker run -p 5000:5000 github-health-dashboard
-📊 Scoring System
+```
 
-Each repository is evaluated using three scores (0–10):
+---
 
-Activity – Based on repository stars
-Community – Based on stars and forks
-Maintenance – Based on recent commit activity
+## 📊 Repository Scoring
 
-Overall Health Score = Average of the three scores.
+Each repository receives three scores (0–10):
 
-🎯 How It Works
-Enter a GitHub username.
-The app fetches public repositories using the GitHub API.
-Repository health scores are calculated.
-Results are displayed with charts and summaries.
+| Metric         | Based On               |
+| -------------- | ---------------------- |
+| ⭐ Activity     | Repository stars       |
+| 👥 Community   | Stars + forks          |
+| 🔧 Maintenance | Recent commit activity |
 
-License
+**Overall Health Score = Average of the three scores**
 
-👨‍💻 Author
+---
 
-Built as a portfolio project to demonstrate full-stack development, DevOps, and cloud deployment skills.
+## ⚙️ How It Works
 
-Built with ❤️ using Flask, Chart.js, Docker, and Cloud Platforms.
+1. Enter a GitHub username.
+2. The application fetches all public repositories.
+3. Repository metrics are analyzed.
+4. Health scores are calculated.
+5. Interactive charts and summaries are displayed.
+
+---
+
+## 📸 Dashboard Preview
+
+> Add screenshots or a GIF of your application here.
+
+---
+
+## 📈 Future Enhancements
+
+* GitHub OAuth login
+* AI-generated repository insights
+* Export reports as PDF
+* GitHub Webhooks
+* Advanced filtering and sorting
+* Language-wise analytics
+* Contributor insights
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👨‍💻 Author
+
+Built as a portfolio project to demonstrate:
+
+* Full-Stack Development
+* API Integration
+* Docker & Containerization
+* Cloud Deployment
+* DevOps & CI/CD
+
+---
+
+**⭐ If you found this project useful, consider giving it a star!**
