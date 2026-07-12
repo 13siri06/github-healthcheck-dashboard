@@ -170,4 +170,4 @@ Built as a portfolio project to demonstrate:
 
 ---
 
-**⭐ If you found this project useful, consider giving it a star!**
+
