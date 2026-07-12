@@ -66,6 +66,3 @@ EC2 (Jenkins) builds the Docker image on every push → pushes to Docker Hub →
 
 ---
 
-## 📄 License
-
-MIT
