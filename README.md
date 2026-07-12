@@ -1,173 +1,69 @@
 # 🚀 GitHub HealthCheck Dashboard
 
-An intelligent web application that analyzes GitHub user profiles and provides insights into repository health, activity, and community engagement.
+Analyzes any GitHub user's public repos and shows health scores, charts, and an AI-generated summary.
+
+**Live app:** [ https://github-healthcheck-dashboard.onrender.com]
+**Backend / CI:** [AWS EC2 —  http://13.233.84.245]
 
 ---
 
 ## ✨ Features
 
-* 🔍 Analyze all public repositories of any GitHub user
-* 📊 Interactive dashboard with Chart.js visualizations
-* 🤖 Repository health summaries
-* 🌙 Dark/Light mode support
-* 📱 Responsive design for desktop and mobile
-* 🚀 Cloud deployment with Docker and CI/CD
+- Analyzes all public repos for any GitHub username
+- Repo health scores: Activity, Community, Maintenance
+- Interactive Chart.js dashboard (commit trends, issue stats)
+- AI-generated health summary via the Anthropic API
+- Error handling for invalid users / rate limits
+- Auto-deploys on every push (Jenkins → Docker Hub → Render)
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-
-* Python 3.9
-* Flask
-* GitHub REST API
-
-### Frontend
-
-* HTML
-* CSS
-* JavaScript
-* Chart.js
-
-### DevOps & Cloud
-
-* Docker
-* AWS EC2
-* Render
-* Jenkins (CI/CD)
-
----
-
-## 📋 Project Phases
-
-### ✅ Phase 1 – Backend Development
-
-* Flask web application
-* GitHub API integration
-* Repository health scoring
-* Error handling
-
-### ✅ Phase 2 – Dashboard UI
-
-* Responsive interface
-* Interactive charts
-* Dark/Light mode
-* Repository health summaries
-* Card-based layout
-
-### ✅ Phase 3 – DevOps & Deployment
-
-* Docker containerization
-* AWS EC2 deployment
-* Render deployment
-* Jenkins CI/CD pipeline
-
----
-
-## 🚀 Installation
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/github-healthcheck-dashboard.git
-cd github-healthcheck-dashboard
-```
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Run the Application
-
-```bash
-python app.py
-```
-
-Open your browser and visit:
-
-```text
-http://localhost:5000
-```
-
----
-
-## 🐳 Run with Docker
-
-Build the Docker image:
-
-```bash
-docker build -t github-health-dashboard .
-```
-
-Run the container:
-
-```bash
-docker run -p 5000:5000 github-health-dashboard
-```
-
----
-
-## 📊 Repository Scoring
-
-Each repository receives three scores (0–10):
-
-| Metric         | Based On               |
-| -------------- | ---------------------- |
-| ⭐ Activity     | Repository stars       |
-| 👥 Community   | Stars + forks          |
-| 🔧 Maintenance | Recent commit activity |
-
-**Overall Health Score = Average of the three scores**
+**Backend:** Python, Flask, GitHub REST API, Anthropic API
+**Frontend:** HTML, CSS, JavaScript, Chart.js
+**DevOps:** Docker, Jenkins, AWS EC2, Render
 
 ---
 
 ## ⚙️ How It Works
 
-1. Enter a GitHub username.
-2. The application fetches all public repositories.
-3. Repository metrics are analyzed.
-4. Health scores are calculated.
-5. Interactive charts and summaries are displayed.
+1. Enter a GitHub username
+2. App fetches all public repos via the GitHub API
+3. Computes Activity / Community / Maintenance scores
+4. Anthropic API generates a short health summary
+5. Dashboard renders charts + scores + summary
 
 ---
 
-## 📸 Dashboard Preview
+## 🚀 Run Locally
 
-> Add screenshots or a GIF of your application here.
+```bash
+git clone https://github.com/YOUR_USERNAME/github-healthcheck-dashboard.git
+cd github-healthcheck-dashboard
+pip install -r requirements.txt
+python app.py
+```
+
+Visit `http://localhost:5000`
 
 ---
 
-## 📈 Future Enhancements
+## 🐳 Run with Docker
 
-* GitHub OAuth login
-* AI-generated repository insights
-* Export reports as PDF
-* GitHub Webhooks
-* Advanced filtering and sorting
-* Language-wise analytics
-* Contributor insights
+```bash
+docker build -t github-health-dashboard .
+docker run -p 5000:5000 github-health-dashboard
+```
+
+---
+
+## 📦 Deployment Pipeline
+
+EC2 (Jenkins) builds the Docker image on every push → pushes to Docker Hub → Render pulls the image and serves the live app. If EC2 ever stops, Render can be pointed directly at the GitHub repo to keep auto-deploys running without it.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
-
----
-
-## 👨‍💻 Author
-
-Built as a portfolio project to demonstrate:
-
-* Full-Stack Development
-* API Integration
-* Docker & Containerization
-* Cloud Deployment
-* DevOps & CI/CD
-
----
-
-
+MIT
